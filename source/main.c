@@ -1,8 +1,8 @@
 /*	Author: Quinn Leader qlead001@ucr.edu
  *      Partner(s) Name: NA
  *	Lab Section: 026
- *	Assignment: Lab 4  Exercise 1
- *	Exercise Description: Toggle LEDs
+ *	Assignment: Lab 4  Exercise 2
+ *	Exercise Description: Counter
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
@@ -14,29 +14,27 @@
 
 enum States {
     Start,
-    LED0,
-    LED1,
-    Release0,
-    Release1,
+    Press,
+    Release,
 } state;
+
+unsigned char count;
 
 void Tick() {
     switch(state) { // Transitions
         case Start:
-            state = LED0;
-            PORTB = 0x01;
+            state = Release;
+            count = 7;
             break;
-        case LED0:
-            if (!PINA) state = Release0;
+        case Press:
+            if (unsigned char temp = PINA&0x03) {
+                state = Release;
+                if (temp == 0x01 && count < 9) count++;
+                else if (temp == 0x02 && count > 0) count--;
+            }
             break;
-        case LED1:
-            if (!PINA) state = Release1;
-            break;
-        case Release0:
-            if (PINA) state = LED1;
-            break;
-        case Release1:
-            if (PINA) state = LED0;
+        case Release:
+            if (!PINA) state = Press;
             break;
         default:
             state = Start;
@@ -46,21 +44,17 @@ void Tick() {
     switch(state) { // State Actions
         case Start:
             break;
-        case LED0:
-            PORTB = 0x01;
-            break;
-        case LED1:
-            PORTB = 0x02;
-            break;
         default:
             break;
     } // State Actions
+
+    PORTC = count;
 }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0x00; PORTA = 0xFF;
-    DDRB = 0xFF; PORTB = 0x00;
+    DDRC = 0xFF; PORTC = 0x00;
     /* Insert your solution below */
     while (1) {
         Tick();
