@@ -53,6 +53,15 @@ expectPORTC 6
 expect state Release
 checkResult
 
+test "PINA: 0x03 => PORTC: 6, state: Release"
+set state = Press
+set count = 0x07
+setPINA 0x03
+continue 7
+expectPORTC 0
+expect state Release
+checkResult
+
 test "PINA: 0x01, 0x00, 0x01, 0x00, 0x01 => PORTC: 9, state: Release"
 set state = Release
 set count = 0x07

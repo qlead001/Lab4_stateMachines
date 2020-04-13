@@ -23,17 +23,19 @@ unsigned char count;
 void Tick() {
     switch(state) { // Transitions
         case Start:
-            state = Release;
+            state = Press;
             count = 7;
             break;
         case Press:
             if (PINA&0x03) {
                 state = Release;
-                if ((PINA&0x03) == 0x01 && count < 9) count++;
+                if ((PINA&0x03) == 0x03) count = 0;
+                else if ((PINA&0x03) == 0x01 && count < 9) count++;
                 else if ((PINA&0x03) == 0x02 && count > 0) count--;
             }
             break;
         case Release:
+            if ((PINA&0x03) == 0x03) count = 0;
             if (!(PINA&0x03)) state = Press;
             break;
         default:
