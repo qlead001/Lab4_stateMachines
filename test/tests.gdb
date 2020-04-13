@@ -35,27 +35,43 @@ expectPORTB 0
 expectPORTC Release
 checkResult
 
-test "unlocked: 0, PINA: 0x04, 0x00, 0x02 => PORTB: 1, PORTC: Release"
+test "unlocked: 0, PINA: 0x04, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01 => PORTB: 1, PORTC: Release"
 set state = Press
 set unlocked = 0
 setPINA 0x04
 continue 2
 setPINA 0x00
 continue 2
+setPINA 0x01
+continue 2
+setPINA 0x00
+continue 2
 setPINA 0x02
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
 continue 5
 expectPORTB 1
 expectPORTC Release
 checkResult
 
-test "unlocked: 1, PINA: 0x04, 0x00, 0x02 => PORTB: 1, PORTC: Release"
+test "unlocked: 1, PINA: 0x04, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01 => PORTB: 0, PORTC: Release"
 set state = Press
 set unlocked = 1
 setPINA 0x04
 continue 2
 setPINA 0x00
 continue 2
+setPINA 0x01
+continue 2
+setPINA 0x00
+continue 2
 setPINA 0x02
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
 continue 5
 expectPORTB 0
 expectPORTC Release
@@ -74,7 +90,7 @@ expectPORTB 0
 expectPORTC Release
 checkResult
 
-test "PINA: 0x04, 0x00, 0x01, 0x04, 0x00, 0x02 => PORTB: 1, PORTC: Release"
+test "PINA: 0x04, 0x00, 0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01 => PORTB: 1, PORTC: Release"
 set state = Press
 set unlocked = 0
 setPINA 0x04
@@ -89,20 +105,36 @@ setPINA 0x04
 continue 2
 setPINA 0x00
 continue 2
+setPINA 0x01
+continue 2
+setPINA 0x00
+continue 2
 setPINA 0x02
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
 continue 5
 expectPORTB 1
 expectPORTC Release
 checkResult
 
-test "PINA: 0x04, 0x00, 0x02, 0x04, 0x00, 0x01, 0x00 => PORTB: 1, PORTC: Press"
+test "PINA: 0x04, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00, 0x04, 0x00, 0x01, 0x00 => PORTB: 1, PORTC: Press"
 set state = Press
 set unlocked = 0
 setPINA 0x04
 continue 2
 setPINA 0x00
 continue 2
+setPINA 0x01
+continue 2
+setPINA 0x00
+continue 2
 setPINA 0x02
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
 continue 2
 setPINA 0x00
 continue 2
