@@ -1,8 +1,8 @@
 /*	Author: Quinn Leader qlead001@ucr.edu
  *      Partner(s) Name: NA
  *	Lab Section: 026
- *	Assignment: Lab 4  Exercise 4
- *	Exercise Description: Combination toggle lock door
+ *	Assignment: Lab 4  Exercise 5
+ *	Exercise Description: Combination toggle lock door with longer combo
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
