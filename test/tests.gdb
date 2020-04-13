@@ -26,65 +26,13 @@
 echo ======================================================\n
 echo Running all tests..."\n\n
 
-test "PINA: 0x00 => PORTC: 7, state: Press"
-set state = Release
-set count = 0x07
-setPINA 0x00
-continue 7
-expectPORTC 7
-expect state Press
-checkResult
-
-test "PINA: 0x01 => PORTC: 8, state: Release"
+test "PINA: 0x80 => PORTB: 0, PORTC: Release"
 set state = Press
-set count = 0x07
-setPINA 0x01
+set unlocked = 1
+setPINA 0x80
 continue 7
-expectPORTC 8
-expect state Release
-checkResult
-
-test "PINA: 0x02 => PORTC: 6, state: Release"
-set state = Press
-set count = 0x07
-setPINA 0x02
-continue 7
-expectPORTC 6
-expect state Release
-checkResult
-
-test "PINA: 0x01, 0x00, 0x01, 0x00, 0x01 => PORTC: 9, state: Release"
-set state = Release
-set count = 0x07
-setPINA 0x01
-continue 2
-setPINA 0x00
-continue 2
-setPINA 0x01
-continue 2
-setPINA 0x00
-continue 2
-setPINA 0x01
-continue 5
-expectPORTC 9
-expect state Release
-checkResult
-
-test "PINA: 0x02, 0x00, 0x02, 0x00, 0x02, count: 2 => PORTC: 0, state: Release"
-set state = Release
-set count = 0x02
-setPINA 0x02
-continue 2
-setPINA 0x00
-continue 2
-setPINA 0x02
-continue 2
-setPINA 0x00
-continue 2
-setPINA 0x02
-continue 5
-expectPORTC 0
-expect state Release
+expectPORTB 0
+expectPORTC Release
 checkResult
 
 # Report on how many tests passed/tests ran

@@ -18,13 +18,13 @@ enum States {
     Release,
 } state;
 
-enum Buttons {
+typedef enum Buttons {
     X = 1,
     Y = 2,
     ENTER = 4,
-};
+} Buttons;
 
-unsigned char unlocked, index;
+unsigned char unlocked, comboIndex;
 const unsigned char comboLen = 2;
 const Buttons combo[] = {ENTER, Y};
 
