@@ -31,7 +31,7 @@ const Buttons combo[] = {ENTER, Y};
 void Tick() {
     switch(state) { // Transitions
         case Start:
-            state = Release;
+            state = Press;
             unlocked = 0;
             comboIndex = 0;
             break;
