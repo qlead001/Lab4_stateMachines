@@ -1,81 +1,124 @@
-/*	Author: Quinn Leader qlead001@ucr.edu
- *      Partner(s) Name: NA
- *	Lab Section: 026
- *	Assignment: Lab 4  Exercise 4
- *	Exercise Description: Combination toggle lock door
- *
- *	I acknowledge all content contained herein, excluding template or example
- *	code, is my own original work.
- */
-#include <avr/io.h>
-#ifdef _SIMULATE_
-#include "simAVRHeader.h"
-#endif
+# Test file for "Lab4_stateMachines"
 
-enum States {
-    Start,
-    Press,
-    Release,
-} state;
 
-typedef enum Buttons {
-    X = 1,
-    Y = 2,
-    ENTER = 4,
-} Buttons;
+# commands.gdb provides the following functions for ease:
+#   test "<message>"
+#       Where <message> is the message to print. Must call this at the beginning of every test
+#       Example: test "PINA: 0x00 => expect PORTC: 0x01"
+#   checkResult
+#       Verify if the test passed or failed. Prints "passed." or "failed." accordingly, 
+#       Must call this at the end of every test.
+#   expectPORTx <val>
+#       With x as the port (A,B,C,D)
+#       The value the port is epected to have. If not it will print the erroneous actual value
+#   setPINx <val>
+#       With x as the port or pin (A,B,C,D)
+#       The value to set the pin to (can be decimal or hexidecimal
+#       Example: setPINA 0x01
+#   printPORTx f OR printPINx f 
+#       With x as the port or pin (A,B,C,D)
+#       With f as a format option which can be: [d] decimal, [x] hexadecmial (default), [t] binary 
+#       Example: printPORTC d
+#   printDDRx
+#       With x as the DDR (A,B,C,D)
+#       Example: printDDRB
 
-unsigned char unlocked, comboIndex;
-const unsigned char comboLen = 2;
-const Buttons combo[] = {ENTER, Y};
+echo ======================================================\n
+echo Running all tests..."\n\n
 
-void Tick() {
-    switch(state) { // Transitions
-        case Start:
-            state = Release;
-            unlocked = 0;
-            comboIndex = 0;
-            break;
-        case Press:
-            if (PINA&0x87) {
-                state = Release;
-                if ((PINA&0x87) == 0x80) unlocked = 0;
-                else if ((PINA&0x07) == combo[comboIndex]) {
-                    if (++comboIndex >= comboLen) {
-                        unlocked = !unlocked;
-                        comboIndex = 0;
-                    }
-                }
-                else if ((PINA&0x07) == ENTER) comboIndex = 1;
-                else comboIndex = 0;
-            }
-            break;
-        case Release:
-            if (!(PINA&0x87)) state = Press;
-            break;
-        default:
-            state = Start;
-            break;
-    } // Transitions
+test "PINA: 0x80 => PORTB: 0, PORTC: Release"
+set state = Press
+set unlocked = 1
+setPINA 0x80
+continue 7
+expectPORTB 0
+expectPORTC Release
+checkResult
 
-    switch(state) { // State Actions
-        case Start:
-            break;
-        default:
-            break;
-    } // State Actions
+test "unlocked: 0, PINA: 0x04, 0x00, 0x02 => PORTB: 1, PORTC: Release"
+set state = Press
+set unlocked = 0
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x02
+continue 5
+expectPORTB 1
+expectPORTC Release
+checkResult
 
-    PORTB = unlocked;
-    PORTC = state;
-}
+test "unlocked: 1, PINA: 0x04, 0x00, 0x02 => PORTB: 1, PORTC: Release"
+set state = Press
+set unlocked = 1
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x02
+continue 5
+expectPORTB 0
+expectPORTC Release
+checkResult
 
-int main(void) {
-    /* Insert DDR and PORT initializations */
-    DDRA = 0x00; PORTA = 0xFF;
-    DDRB = 0xFF; PORTB = 0x00;
-    DDRC = 0xFF; PORTC = 0x00;
-    /* Insert your solution below */
-    while (1) {
-        Tick();
-    }
-    return 1;
-}
+test "PINA: 0x04, 0x00, 0x01 => PORTB: 0, PORTC: Release"
+set state = Press
+set unlocked = 0
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
+continue 5
+expectPORTB 0
+expectPORTC Release
+checkResult
+
+test "PINA: 0x04, 0x00, 0x01, 0x04, 0x00, 0x02 => PORTB: 1, PORTC: Release"
+set state = Press
+set unlocked = 0
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x02
+continue 5
+expectPORTB 1
+expectPORTC Release
+checkResult
+
+test "PINA: 0x04, 0x00, 0x02, 0x04, 0x00, 0x01, 0x00 => PORTB: 1, PORTC: Press"
+set state = Press
+set unlocked = 0
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x02
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x04
+continue 2
+setPINA 0x00
+continue 2
+setPINA 0x01
+continue 2
+setPINA 0x00
+continue 5
+expectPORTB 1
+expectPORTC Press
+checkResult
+
+# Report on how many tests passed/tests ran
+set $passed=$tests-$failed
+eval "shell echo Passed %d/%d tests.\n",$passed,$tests
+echo ======================================================\n
